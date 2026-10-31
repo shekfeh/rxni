@@ -48,3 +48,5 @@ include-package-data = true
 
 [tool.setuptools.package-data]
 rxni = ["semantic/contracts/fgi_contracts_v1.json", "builder/builder_provenance.json"]
+
+readme = "README.md"
