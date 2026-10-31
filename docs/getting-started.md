@@ -21,7 +21,9 @@ python -m pip install '.[api,cli]'
 For YAML-backed optional adapter functionality:
 
 ```bash
-python -m pip install '.[chemkn]'
+pip install -e .
+# Or, for the public API and CLI:
+pip install -e ".[api,cli]"
 ```
 
 Do not expect RXNI to download a reaction corpus or proprietary ChemKN knowledge assets during installation.
