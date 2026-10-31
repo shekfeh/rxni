@@ -22,3 +22,30 @@ not a legal copyright opinion.
 
 The Apache-2.0 license covers only materials the authors are authorized
 to license. External scientific knowledge providers are independent.
+
+## FGI rule authorship and validation provenance (31 October 2026)
+
+The functional-group interconversion (FGI) transformation rules and heuristic
+validation/detection procedures in RXNI were developed within the Reaction
+Intelligence research and software-development project. The project author
+confirmed this origin during the RXNI v0.1.0 release review.
+
+The heuristic rules were iteratively tested, corrected and refined using
+reaction and reaction-template datasets extracted from the USPTO 1960–2016
+corpus. These historical reaction records and template-extraction datasets
+served as development and evaluation evidence; they are **distinct from** the
+project-authored FGI rule definitions and generated detector source.
+
+The frozen RXNI v0.1.0 FGI contract contains **82 directional FGI entries**.
+Its exact public-release SHA256 is
+`c5cfca057c283068b40a3dfb1e881c294c73e6196353deff2d5f5242c60667c2`.
+The corresponding generated detector source was consolidated from the
+project-developed rule implementation and is not an independently obtained
+third-party rule database.
+
+This authorship statement does **not** grant redistribution rights for USPTO
+reaction records, extracted source templates or other third-party datasets.
+The RXNI v0.1.0 release distributes software and the stated project-developed
+FGI rule implementation, not the validation corpora or held-out reaction truth.
+The distribution manifest and tracked repository contents must be reviewed
+independently to confirm this separation.

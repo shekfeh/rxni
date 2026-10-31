@@ -49,3 +49,11 @@ RXNI original software is licensed under the **Apache License, Version 2.0** (SP
 ## Documentation and tutorials
 
 Start with the [documentation index](docs/index.md), [getting started](docs/getting-started.md), [CLI reference](docs/cli-reference.md), [API reference](docs/api-quickstart.md), and [four practical tutorials](docs/index.md#first-steps). Examples assume an existing compatible reaction library and do not bundle third-party source corpora.
+
+## Rule provenance and data boundary
+
+RXNI's 82 directional FGI rules are project-developed heuristics, iteratively
+refined against USPTO 1960–2016 reaction/template datasets. The underlying
+source reaction datasets and private evaluation truth are not bundled.
+See [the provenance summary](docs/provenance-summary-v0.1.md) and
+[release limitations](docs/release-limits-v0.1.md).
