@@ -1,0 +1,19 @@
+{
+  "schema_profile_version": 1,
+  "profile_id": "rxni_custom_example_v1",
+  "columns": {
+    "record_id": "record_id",
+    "reaction": "mapped_reaction",
+    "semantic_profile_json": "semantic_profile_json",
+    "semantics_json": "semantics_json",
+    "reaction_centers_json": "reaction_centers_json",
+    "localized_fingerprints_json": "localized_fingerprints_json",
+    "multichannel_fingerprint_json": "multichannel_fingerprint_json",
+    "reaction_key": "reaction_key",
+    "representation_generation": "representation_generation",
+    "representation_build_id": "representation_build_id"
+  },
+  "extra_columns": {
+    "source_document_id": {"type": "string", "role": "provenance"}
+  }
+}

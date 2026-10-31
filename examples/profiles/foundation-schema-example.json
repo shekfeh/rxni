@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "profile_id": "renamed-foundation-v1",
+  "structural_index": {
+    "table": "rxni_structural_hits",
+    "columns": {
+      "reaction_key": "member_id",
+      "forward_edit_signature_hash": "edit_sig",
+      "forward_raw_center_hash_r0": "raw_center_0",
+      "forward_raw_center_hash_r1": "raw_center_1",
+      "forward_raw_center_hash_r2": "raw_center_2",
+      "forward_component_topology_hash": "topology_sig",
+      "forward_component_evidence_hash": "component_sig"
+    }
+  },
+  "metadata_lookup": {
+    "table": "rxni_metadata",
+    "columns": {
+      "reaction_key": "member_id",
+      "forward_reaction_smiles": "mapped_reaction",
+      "reaction_id": "source_id",
+      "retro_template_hash": "template_id",
+      "retro_template_number": "template_number",
+      "membership_occurrence_count": "occurrence_count"
+    }
+  }
+}

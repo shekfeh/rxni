@@ -1,0 +1,32 @@
+# RXNI v0.1 — explicit allowlist for redistributable release documentation
+# Do not replace with recursive-include of the private development tree.
+include README.md
+include LICENSE
+include docs/api-quickstart.md
+include docs/cli-reference.md
+include docs/getting-started.md
+include docs/index.md
+include docs/licensing-and-data.md
+include docs/tutorials/01-retrieval.md
+include docs/tutorials/02-analysis-api.md
+include docs/tutorials/03-source-schema.md
+include docs/tutorials/04-foundation-schema.md
+include examples/README.md
+include examples/data/demo_reactions.smi
+include examples/scripts/retrieve_from_core.sh
+include docs/architecture.md
+include docs/version-contracts.md
+include docs/input-schema-profiles.md
+include docs/foundation-schema-profiles.md
+include docs/release-limits-v0.1.md
+include docs/distribution-rights-checklist.md
+include examples/profiles/crd25-uspto-v023a.json
+include examples/profiles/historical-v67.json
+include examples/profiles/custom-csv.json
+include examples/profiles/foundation-schema-example.json
+recursive-include tests *.py
+global-exclude __pycache__ *.pyc *.pyo .DS_Store
+include docs/chemkn-provider-v0.1.md
+include docs/provenance-summary-v0.1.md
+include examples/chemkn/cards.example.jsonl
+include examples/chemkn/method_links.example.jsonl

@@ -1,0 +1,23 @@
+{
+  "embedded_builder_reported_version": "0.2 / strict-core v0.2.1",
+  "g2c_train_only_index_status": "NOT_BUILT",
+  "original_file_sha256": {
+    "__init__.py": "c4fdb7c566a309ded330872eafe2e73bb8330d6113db680ce0c0e753cda5264e",
+    "auxiliary.py": "85f05bbed8bc24f5ffc134eaf26dccd996116ddd8dcc7c085b6dd02d75027500",
+    "bridge.py": "17b473d5b8f00f83710a5ab867454d06b21dd1abb16db20a4924f57bc82150dd",
+    "cli.py": "31bbda0857fec83b325580419a87bd55675aaa66be65c61f992d528af94356f9",
+    "knowledge.py": "47f0dfd2a68a26965f8435d33669a7c6db19a168a574739c03cb33bf16c8e3c2",
+    "native_runtime.py": "c5bbcd03f638139bdd2e63f033bc83c207cc4e0d1a20e6a53f1b48dbb5160a13",
+    "native_verify.py": "c75ee29c8dcb2020ea6cc386c4d5f3323d101e6034357c2b0a96db2b9739cc7c",
+    "profiles.py": "61e28d23a908c55a6a48ce5ee7a2a8e86dcddf5df14149d004ef40d5a8a44918"
+  },
+  "public_index_builder_status": "NOT_YET_STANDALONE: external native and lookup producer dependencies",
+  "public_namespace": "rxni.builder",
+  "retrieval_v2_abi_modified": false,
+  "science_modules_byte_identical": true,
+  "source_bundle_sha256": "758e2210164855c9b4560d85a7221b5257d5ef2819e279e7ad940187224f84b9",
+  "upstream_builder": "library_builder",
+  "upstream_manifest": "suite_root/PACKAGE_MANIFEST.json",
+  "upstream_suite": "rxni_dataset_suite_v023",
+  "upstream_suite_version": "0.2.3"
+}
