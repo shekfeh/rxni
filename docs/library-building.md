@@ -1,15 +1,39 @@
-# Build an RXNI Core library
+# Building RXNI Core, native and retrieval libraries
 
-The versionless Python namespace `rxni.builder` contains the verified v0.2.3 source-suite Library Builder Core implementation. The public console command is `rxni-build-library`.
+The current public `rxni.builder` module contains **both** the immutable Core writer and an explicit v6.7-aware native/retrieval auxiliary pipeline. It also retains separate scientific compatibility gates. For the full reproducible workflow, see [Tutorial 06](tutorials/06-build-library-from-sources.md).
 
-The Core builder requires a **complete, lineage-attested source export** directory containing `reaction_core_v5.parquet`, `reaction_template_membership_v5.parquet`, `template_library_v5.parquet` and `manifest.json` with `reaction_policy: native_cleaned_template_extraction_input`. Its `build-core` command computes a normalized four-Parquet Core, *not* an immediately searchable V2 candidate library.
+## Quick navigation
 
-```
+- [Install/use a downloaded library](tutorials/05-download-and-use-library.md)
+- [End-to-end source preparation, AiZynthTrain, Core, auxiliary and packaging](tutorials/06-build-library-from-sources.md)
+- [Template SMARTS, identity namespaces and scientific provenance](tutorials/07-template-catalogue-and-provenance.md)
+- [Historical USPTO distribution status](library-distribution.md)
+- [Source CSV/Parquet schema adapters](input-schema-profiles.md)
+- [Foundation SQLite schema adapters](foundation-schema-profiles.md)
+
+## Actual public builder commands
+
+```bash
+rxni-build-library profiles
 rxni-build-library inspect --export-dir /path/to/aligned/export --reaction-column reaction
-rxni-build-library build-core --export-dir /path/to/aligned/export --reaction-column reaction --dataset MY_DATASET --out-dir /new/output/core
-rxni-build-library validate-core --core /new/output/core --rdkit --report /new/output/core_audit.json
+rxni-build-library build-core --export-dir /path/to/aligned/export \
+  --reaction-column reaction --dataset MY_DATASET --out-dir /new/output/core
+rxni-build-library validate-core --core /new/output/core --rdkit --report /new/output/audit.json
+rxni-build-library inspect-runtime --root /path/to/rxni --runtime v6.7
+rxni-build-library build-auxiliary --core /new/output/core --work-dir /new/output/auxiliary \
+  --root /path/to/rxni --runtime v6.7 --workers 4 --through v2
+rxni-build-library assemble-candidate --core /new/output/core --work-dir /new/output/auxiliary \
+  --root /path/to/rxni --runtime v6.7 \
+  --lookup-db /new/output/auxiliary/native/runtime_lookup_v1.sqlite \
+  --out-dir /new/output/candidate
 ```
 
-The G2C split-only `train_reaction_core_v5.parquet` files are **not** complete source exports. Align and filter the membership and template tables from the same parent export, verify join/key coverage and lineage, then separately compile foundation V5 and V2 representation indexes. Never use the full-corpus indexes to evaluate held-out conditions.
+**Status distinction:** `build-core` creates a 4-Parquet Core, *not* a retrieval library. `build-auxiliary` now resolves **public installed** producer modules `rxni.builder._native.build_all`, `rxni.retrieval.builders.representations`, and `rxni.builder.lookup_cache`; the older claim that the code requires private upstream runtime imports is stale. Nevertheless, the resulting V2 files are **candidate outputs** until full index, semantic and ranking parity and source rights are certified.
 
-**Current boundary:** The archived `build-auxiliary` and `assemble-candidate` commands still depend on nonpublic upstream `runtime_v6_5` / `runtime_v6_7` producers and a same-workspace runtime lookup. They are not verified standalone public index-build commands. Do not advertise or execute them as independent public capabilities until the producer migration and ABI parity tests pass. No conditional scientific accuracy is claimed.
+## Critical template-identity distinction
+
+The current strict public Core writer verifies `retro_template_hash == SHA256(exact retro SMARTS)`. The historical AiZynthTrain `TemplateHash` is calculated using `ReactionTemplate.hash_from_bits()`. Historical 42,128-template replay was 42,128/42,128 successful. These identifiers are not interchangeable. A new Core source export must preserve the native hash separately and re-key all memberships intentionally; the historical Ring031 library must retain its original native identity namespace. See Tutorial 06 §2–3 before attempting new datasets.
+
+## Release boundary
+
+Do not commit 2+ GB historical library data to ordinary Git. Keep data in a separate downloadable archive with DOI and attach only scripts/docs and final immutable download links to this repository. `rxni-library.json` can map clean public filenames without altering the V2 storage ABI. **No dataset is cleared for public redistribution merely by passing RXNI format tests.**
