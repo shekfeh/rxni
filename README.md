@@ -1,6 +1,6 @@
 # RXNI — Reaction Intelligence
 
-**Development release candidate: 0.1.0.** RXNI provides deterministic reaction-semantic analysis, library-based structural/semantic retrieval and exploration of recorded reaction conditions. It does **not** establish experimental reaction success or mechanistic electron-pushing predictions.
+**Published initial software release: v0.1.0. Proposed maintenance release: v0.1.1 (not yet tagged).** RXNI provides deterministic reaction-semantic analysis, library-based structural/semantic retrieval and exploration of recorded reaction conditions. It does **not** establish experimental reaction success or mechanistic electron-pushing predictions.
 
 ## Install from source
 
@@ -55,9 +55,15 @@ The migration and integration evidence includes 384 paired reaction-case parity 
 
 The selected historical USPTO P6/Ring031 candidate contains 812,916 stored reaction records and 42,128 template SMARTS, with 42,128/42,128 historical fingerprint-based hashes reproduced and a 12-case stored/public-profile agreement test. That candidate's source provenance explicitly records an **unpromoted** status and a known scientific review case; its portability evidence is not an independent whole-corpus chemical acceptance. See [publication gates](docs/library-distribution.md) and [release limits](docs/release-limits-v0.1.md).
 
+## Installed library verification
+
+From the proposed `v0.1.1` release, `rxni-verify-library --library /path/to/uspto_1976_2016_rxni_library --smoke` verifies package checksums, storage format and one real retrieval. Until that release is tagged, use `scripts/release/verify_published_library.py` from the current checkout. See [public/compatibility identifiers](docs/compatibility-identifiers.md).
+
 ## License and data rights
 
-RXNI original software is licensed under the **Apache License, Version 2.0** (SPDX `Apache-2.0`); see [LICENSE](LICENSE). The software license does not grant rights to third-party chemistry collections, commercial textbooks, external databases or historical USPTO-derived files of unresolved downstream rights. A dataset distribution requires its own provenance, attribution and rights review. See [licensing and data](docs/licensing-and-data.md) and the [distribution-rights checklist](docs/distribution-rights-checklist.md).
+RXNI original software is licensed under the **Apache License, Version 2.0** (SPDX `Apache-2.0`); see [LICENSE](LICENSE). The software license does not grant rights to third-party chemistry collections, commercial textbooks, external databases or historical USPTO-derived files of unresolved downstream rights. The identified Daniel Lowe USPTO source is marked CC0 at its Figshare deposit; the processed dataset has CC BY 4.0 selected for its Zenodo record. Neither fact automatically clears additional upstream materials, database rights or the unresolved chemical-review scope. See [licensing and data](docs/licensing-and-data.md) and the [distribution-rights checklist](docs/distribution-rights-checklist.md).
+
+The selected historical archive is `uspto_1976_2016_rxni_library.zip` (1,444,488,348 bytes; SHA256 `5f31b689c942359c95e43debc0b8e6a8141fbb200d890fdea544ac3cd3a2a1ca`). The DOI/download URL will be added only after the public Zenodo record exists.
 
 ## Rule provenance and data boundary
 

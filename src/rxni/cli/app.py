@@ -33,7 +33,7 @@ from .render import (
     render_summary,
 )
 
-CLI_VERSION = "rxni-cli/0.1.0"
+CLI_VERSION = "rxni-cli/0.1.1"
 
 app = typer.Typer(
     name="ri",

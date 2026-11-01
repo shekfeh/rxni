@@ -19,7 +19,7 @@ from typing import Any, Sequence
 
 from rxni.integration.retriever import V66Retriever
 
-CLI_VERSION = "rxni-summary/0.1.0"
+CLI_VERSION = "rxni-summary/0.1.1"
 
 try:
     from rxni.chemkn.knowledge_registry import KnowledgeRegistry

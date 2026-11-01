@@ -2,7 +2,7 @@
 
 **Current selected source:** `runs/retrieval_v67_reprofile/v67_retrieval_v2_full_candidate_P6_Ring031_01`.
 
-**Data status:** finalization scripts and user documentation prepared; **the source itself has not been scientifically promoted**. **Public distribution is blocked until redistribution rights are reviewed**. No DOI or download URL exists yet.
+**Data status (1 November 2026):** the 1,444,488,348-byte ZIP is prepared, full checksums and clean v0.1.0 installation/retrieval passed. The original Ring031 scientific source remains an unpromoted candidate; the known review case is disclosed. The dataset was being uploaded to a Zenodo draft; no verified public DOI/URL has been supplied. Full derivative-source rights review and tomorrow's independent WSL test remain open.
 
 ## Distribution specification
 
@@ -21,6 +21,11 @@ Release label: **RXNI Historical USPTO Reaction Library — Release 1**. The pub
 | `SHA256SUMS`, `README.md` | File integrity and usage/rights notice |
 
 Use `rxni.retrieval.libraries.resolve_library()` to load the descriptor. Keep internal V2 Parquet fields and the SQLite table `representation_locator_v2` untouched. A filename rename is not an ABI migration.
+
+**Selected archive:** `uspto_1976_2016_rxni_library.zip`
+**SHA256:** `5f31b689c942359c95e43debc0b8e6a8141fbb200d890fdea544ac3cd3a2a1ca`
+**Extracted folder:** `uspto_1976_2016_rxni_library/`
+**Compatible software:** released `v0.1.0` (independent clean-venv retrieval verified).
 
 ## Confirmed historical evidence
 
@@ -41,16 +46,21 @@ export RXNI="$HOME/Projects/Github_projects/rxni"
  --staged "$ROOT/runs/v680/library_distribution/uspto_historical_v67_ring031_r1" \
  --historical "$ROOT/artifacts/libraries/template_library_v5_native_v01" \
  --ring "$ROOT/runs/retrieval_v67_reprofile/v67_retrieval_v2_full_candidate_P6_Ring031_01" \
- --out "$ROOT/runs/v680/library_distribution/uspto_historical_r1_FINAL" \
+ --out "$ROOT/runs/v680/library_distribution/uspto_1976_2016_rxni_library" \
  --smoke 3
 
 "$ROOT/.venv/bin/python" "$RXNI/scripts/release/verify_published_library.py" \
- --library "$ROOT/runs/v680/library_distribution/uspto_historical_r1_FINAL" --smoke
+ --library "$ROOT/runs/v680/library_distribution/uspto_1976_2016_rxni_library" --smoke
 ```
 
 The finalizer refuses to overwrite `--out`, captures the original scientific receipt SHA256 rather than distributing private absolute path information, verifies every key and locator coordinate and creates a new distribution. It does **not** certify source rights or independent chemical accuracy.
 
 ## Remaining gates before release
+
+- [x] Create ZIP, check SHA256 and perform independent clean-venv technical retrieval on the development machine.
+- [ ] Perform the second-machine WSL acceptance tomorrow; no result is claimed today.
+- [ ] Verify final published DOI and update download instructions after Zenodo publication.
+- [ ] Confirm remaining derivative inputs and attribution; parent Lowe Figshare source is marked CC0 and derivative Zenodo CC BY 4.0 was selected.
 
 - [ ] Independent review/approval of third-party corpus and derivative SMARTS redistribution rights, original source names, attribution and data license. Do not infer rights from RXNI Apache-2.0 software license or USPTO patent publication alone.
 - [ ] Adjudicate or accurately disclose known Ring031 scientific review case and any other scientific acceptance limits; preserve source-receipt status.

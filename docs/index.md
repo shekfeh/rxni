@@ -16,6 +16,9 @@ RXNI software v0.1.0; scientific method baseline v6.7.0. A compatible local reac
 
 ## Technical and publication references
 
+- [Historical compatibility identifiers](compatibility-identifiers.md) — stable public aliases versus immutable V2 and historical scientific fields.
+- [Unreleased 0.1.1 maintenance candidate](release/RELEASE_NOTES_v0.1.1_CANDIDATE.md).
+
 - [Architecture](architecture.md)
 - [Version contracts](version-contracts.md)
 - [Library builder overview](library-building.md)

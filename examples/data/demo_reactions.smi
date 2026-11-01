@@ -1,0 +1,4 @@
+# Illustrative atom-mapped reactions only; NOT a library or validation benchmark.
+[CH3:1][Br:2].[OH-:3]>>[CH3:1][OH:3].[Br-:2]
+[CH3:1][CH2:2][OH:3]>>[CH3:1][CH:2]=[O:3]
+[CH3:1][C:2](=[O:3])[OH:4].[CH3:5][OH:6]>>[CH3:1][C:2](=[O:3])[O:6][CH3:5].[OH2:4]

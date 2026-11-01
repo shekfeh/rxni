@@ -15,9 +15,9 @@ not a legal copyright opinion.
 - The omitted 509-reaction audit includes 19 known-failure examples with
   reaction SMILES, requiring independent source-data provenance review before
   any future redistribution.
-- The contract JSON has traceable lineage to RXNI's private frozen scientific
-  baseline; attribution and ownership remain to be explicitly approved
-  before claiming the public release is legally cleared.
+- The retained FGI contract was confirmed as project-authored in the
+  31 October 2026 provenance review; this does not settle the rights
+  of independent reaction corpora or other third-party resources.
 - No ChemKN textbook datasets or publisher-specific loaders are bundled.
 
 The Apache-2.0 license covers only materials the authors are authorized

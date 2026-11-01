@@ -1,6 +1,6 @@
 # Getting started with RXNI v0.1.0
 
-RXNI is a Python reaction-semantics and retrieval toolkit. The software release is **0.1.0**; its frozen scientific-method baseline is **Reaction Intelligence v6.7.0**. It does **not** promise chemical reaction success, independent retrieval accuracy, or an electron-pushing mechanism prediction.
+RXNI is a Python reaction-semantics and retrieval toolkit. The immutable published software release is **0.1.0**; a maintenance **0.1.1** is being prepared but is not yet tagged; its frozen scientific-method baseline is **Reaction Intelligence v6.7.0**. It does **not** promise chemical reaction success, independent retrieval accuracy, or an electron-pushing mechanism prediction.
 
 ## 1. Install
 

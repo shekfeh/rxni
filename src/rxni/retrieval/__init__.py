@@ -1,4 +1,4 @@
-"""Runtime-v6.6 retrieval API."""
+"""RXNI retrieval public API; preserves historically frozen ABI and code aliases."""
 
 from .library import LibraryLayout
 from .providers import (
@@ -23,6 +23,7 @@ __all__ = [
     "RetrievalRecordProvider",
     "V5CompatibilityProvider",
     "V2StoredRecordProvider",
+    "StoredRecordProvider",
     "build_retrieval_record",
     "member_scores",
     "template_score",
@@ -37,3 +38,6 @@ __all__ = [
 # Compatibility API only. Scientific implementation remains derive_structural_keys.
 from .structural_keys import derive_structural_keys
 derive_query_structural_keys = derive_structural_keys
+
+# Stable user-facing alias. The V2 stored format remains unchanged.
+StoredRecordProvider = V2StoredRecordProvider

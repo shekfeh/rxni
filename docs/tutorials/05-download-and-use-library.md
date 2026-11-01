@@ -28,12 +28,12 @@ The current software repository is <https://github.com/shekfeh/rxni>. Source ins
 
 ## 3. Obtain the dataset
 
-**Release download URL/DOI: PENDING PUBLICATION.** Do not invent a release URL until the rights audit and upload are complete. Once a URL has been published, download the dataset archive and extract to a stable data directory, *outside* your Git checkout.
+**Release download URL/DOI: PENDING PUBLICATION; do not invent a DOI.** Do not invent a release URL until the rights audit and upload are complete. Once a URL has been published, download the dataset archive and extract to a stable data directory, *outside* your Git checkout.
 
 Expected directory:
 
 ```text
-RXNI-Historical-USPTO-r1/
+uspto_1976_2016_rxni_library/
     rxni-library.json
     structural_index.sqlite
     reaction_lookup.sqlite
@@ -52,7 +52,7 @@ Do not rename individual files after extraction unless you also update `rxni-lib
 ## 4. Verify download integrity and the installed reader
 
 ```bash
-export RXNI_LIBRARY="$HOME/data/RXNI-Historical-USPTO-r1"
+export RXNI_LIBRARY="$HOME/data/uspto_1976_2016_rxni_library"
 cd "$RXNI_LIBRARY"
 sha256sum -c SHA256SUMS
 ```
@@ -68,7 +68,7 @@ Expected fields from Python:
 
 ```python
 from rxni.retrieval.libraries import inspect_library
-print(inspect_library('/path/to/RXNI-Historical-USPTO-r1'))
+print(inspect_library('/path/to/uspto_1976_2016_rxni_library'))
 # status: V2_READABLE
 # layout: descriptor-v1
 ```
@@ -154,10 +154,10 @@ This illustrates argument syntax, not recommended conditions for that reaction. 
 ## 8. Python API
 
 ```python
-from rxni.integration.retriever import V66Retriever
+from rxni.integration import ReactionRetriever
 
-library = '/absolute/path/to/RXNI-Historical-USPTO-r1'
-retriever = V66Retriever(library)
+library = '/absolute/path/to/uspto_1976_2016_rxni_library'
+retriever = ReactionRetriever(library)
 try:
     result = retriever.retrieve(
         'CC(=O)O.OCC>>CC(=O)OCC',
@@ -169,7 +169,7 @@ finally:
     retriever.close()
 ```
 
-`V66Retriever` is the current **Python class name**, retained for the frozen scoring implementation. It can read the new v6.7/Ring031 stored profiles and does not imply that all query semantics are v6.6.
+`ReactionRetriever` is the stable public alias of the historical `V66Retriever` implementation; the validated retrieval and scoring behavior is unchanged. It can read the new v6.7/Ring031 stored profiles and does not imply that all query semantics are v6.6.
 
 ### Optional local HTTP API
 
@@ -188,7 +188,7 @@ The optional `template_catalog.parquet` has 42,128 rows and includes `retro_temp
 import pyarrow.parquet as pq
 from rdkit.Chem import rdChemReactions
 
-catalog = pq.read_table('/path/to/RXNI-Historical-USPTO-r1/template_catalog.parquet',
+catalog = pq.read_table('/path/to/uspto_1976_2016_rxni_library/template_catalog.parquet',
                         columns=['retro_template_hash', 'retro_template_smarts'])
 row = catalog.slice(0, 1).to_pylist()[0]
 print('ID:', row['retro_template_hash'])
@@ -197,6 +197,8 @@ assert rdChemReactions.ReactionFromSmarts(row['retro_template_smarts']) is not N
 ```
 
 The template identifiers use **AiZynthTrain/rxnutils `hash_from_bits()`**, not SHA256 of the literal SMARTS string. Their complete replay (42,128/42,128) was validated in the separate AiZynthTrain environment. Do **not** recompute these IDs using a raw-SMARTS hash when joining the metadata lookup to the catalogue.
+
+For the planned RXNI v0.1.1 installed CLI use `rxni-verify-library --library "$RXNI_LIBRARY" --smoke`; until then, use the repository script shown in section 4. See [compatibility identifiers](../compatibility-identifiers.md).
 
 ## 10. Troubleshooting
 

@@ -9,7 +9,7 @@ import unittest
 class TestPublicVersionContract(unittest.TestCase):
     def test_public_package_version(self):
         import rxni
-        self.assertEqual(rxni.__version__, '0.1.0')
+        self.assertEqual(rxni.__version__, '0.1.1')
         self.assertEqual(rxni.SCIENTIFIC_BASELINE_VERSION, '6.7.0')
         self.assertEqual(rxni.RUNTIME_VERSION, rxni.SCIENTIFIC_BASELINE_VERSION)
 

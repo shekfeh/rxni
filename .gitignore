@@ -46,3 +46,7 @@ raw_rebuilds/
 auth.json
 credentials.json
 .DS_Store
+
+# Ship the tiny, original documented example; keep generic data/ ignored.
+!examples/data/
+!examples/data/demo_reactions.smi

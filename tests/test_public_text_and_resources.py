@@ -29,7 +29,7 @@ class TestPublicTextAndResources(unittest.TestCase):
                          and any(isinstance(t,ast.Name) and t.id==name for t in node.targets)]
             self.assertEqual(len(assignments),1,name)
             return ast.literal_eval(assignments[0].value)
-        self.assertEqual(literal(self.package/'__init__.py','__version__'),'0.1.0')
+        self.assertEqual(literal(self.package/'__init__.py','__version__'),'0.1.1')
         self.assertEqual(literal(self.package/'semantic/version.py','RUNTIME_VERSION'),'6.7.0')
         self.assertEqual(literal(self.package/'retrieval/version.py','STORED_REPRESENTATION_GENERATION'),
                          'retrieval_representations_v2')

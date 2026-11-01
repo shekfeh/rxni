@@ -81,8 +81,8 @@ The label **1976–2016** is the known coverage range of the parent USPTO patent
 ## Zenodo upload workflow
 
 1. Visit https://zenodo.org/ and create **New upload**. Select **Dataset** as the resource type. Use the separate dataset record rather than the automated GitHub software archive.
-2. Upload `uspto_1976_2016_rxni_library.zip` (and optionally `uspto_1976_2016_rxni_library.zip.sha256`). The ~2.4 GB package is below Zenodo's default 50 GB per-record limit, subject to actual archive size.
-3. Use a descriptive title such as **RXNI USPTO 1976–2016 Reaction Retrieval Library (v6.7 P6/Ring031 semantic profiles), Release 1**.  Supply the actual creator(s), institutional affiliations and funding, rather than inferred credentials.
+2. Upload `uspto_1976_2016_rxni_library.zip` (and optionally `uspto_1976_2016_rxni_library.zip.sha256`). The 1,444,488,348-byte ZIP archive is below Zenodo's default 50 GB per-record limit, subject to actual archive size.
+3. Use the public title **RXNI USPTO 1976–2016 Reaction Retrieval Library — Release 1 (for RXNI v0.1.x)**; retain actual technical producer identifiers in the archive provenance.  Supply the actual creator(s), institutional affiliations and funding, rather than inferred credentials.
 4. In *Related identifiers*, relate the dataset to `https://github.com/shekfeh/rxni` as **software** or **is supplemented by**, as appropriate; add a DOI for the RXNI software if already available. A GitHub account connection does **not** automatically attach a manually deposited dataset to a GitHub release.
 5. Describe the *scope*: 812,916 retrieval records, 42,128 authentic retro SMARTS, reproducible hash matching, explicit structural and semantic runtime lineage; distinguish technical parity from scientific accuracy.
 6. Do **not** select a data license without establishing rights to redistribute the source extraction/derivatives, including database rights where applicable. RXNI code's Apache-2.0 license is separate from the data license.
@@ -91,13 +91,18 @@ The label **1976–2016** is the known coverage range of the parent USPTO patent
 
 Zenodo documentation: https://help.zenodo.org/docs/deposit/create-new-upload/ and https://help.zenodo.org/docs/github/enable-repository/.  GitHub-Zenodo integration archives **GitHub source-code releases** automatically; manual dataset deposits are independent records.
 
+## Verified 1 November 2026 technical candidate
+
+The final ZIP has 1,444,488,348 bytes and SHA256 `5f31b689c942359c95e43debc0b8e6a8141fbb200d890fdea544ac3cd3a2a1ca`. A clean isolated Python 3.10 installation of the published `v0.1.0` software successfully installed, verified all 12 checksummed dataset files, checked 812,916 reactions and 42,128 templates, and retrieved nonempty candidates. The parent Lowe Figshare source is marked CC0; CC BY 4.0 was selected for this derivative Zenodo draft. No public DOI is supplied yet. Do not claim tomorrow's WSL test has run.
+
 ## Publication gates
 
 - [ ] Validate the source parent corpus's stated year span against specific historical source metadata.
 - [ ] Confirm redistribution rights for source reaction records, mapped SMILES, extracted templates and fingerprints; document attribution.
 - [ ] Review the outstanding Ring031 scientific case in `SCIENTIFIC_PROVENANCE.json` and avoid overstating acceptance if unresolved.
 - [ ] Inspect `RELEASE_AUDIT.json`, all 812,916 locator positions, full Parquet/SQLite schema and `SHA256SUMS` after running the finalizer.
-- [ ] Verify archive extraction and retrieval in a clean RXNI v0.1.0 environment on a second location.
+- [x] Verify archive extraction and retrieval in a clean RXNI v0.1.0 environment on this development workstation.
+- [ ] Independent fresh-machine WSL installation and tutorials acceptance (tomorrow).
 - [ ] Verify no user-specific or private local paths, logs or temporary SQLite WAL/SHM files are included.
 - [ ] Link the dataset DOI from the public RXNI repo only **after** deposit publication.
 

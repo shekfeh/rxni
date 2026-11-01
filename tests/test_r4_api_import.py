@@ -28,8 +28,8 @@ class TestApiImport(unittest.TestCase):
         try:import tomllib
         except ModuleNotFoundError:import tomli as tomllib
         proj=tomllib.loads((ROOT/'pyproject.toml').read_text())['project']
-        self.assertEqual(proj['version'],'0.1.0')
-        self.assertTrue({'api','cli','chemkn','dev'} <= set(proj['optional-dependencies']))
+        self.assertEqual(proj['version'],'0.1.1')
+        self.assertTrue({'api','cli','dev'} <= set(proj['optional-dependencies']))
         self.assertTrue({'rxni','rxni-summary','rxni-batch'} <= set(proj['scripts']))
 
 if __name__=='__main__':unittest.main()

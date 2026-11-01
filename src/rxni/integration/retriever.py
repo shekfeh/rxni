@@ -1,25 +1,11 @@
-"""Runtime-v6.7 semantic front end over the self-contained Runtime-v6.7 namespace preserving the frozen Runtime-v6.6 retrieval contract.
+"""RXNI reaction retriever: stable public alias, frozen retrieval algorithm.
 
-This module intentionally preserves the validated Runtime-v6.6 retrieval
-algorithms and stored Retrieval-V2 candidate records while constructing the
-*query* retrieval record from Runtime-v6.7 canonical semantics. The v6.6 retrieval algorithms are locally copied
-under ``runtime_v6_7``; no production import of ``runtime_v6_6`` is required.
-
-Execution contract:
-    query reaction
-        -> Runtime-v6.7 canonical semantic classification
-        -> v6.7-local copy of frozen Runtime-v6.6 structural-key generation
-        -> frozen Library-v5 structural index
-        -> frozen Retrieval-V2 candidate records
-        -> v6.7-local copy of frozen Runtime-v6.6 member scoring
-        -> v6.7-local copy of frozen Runtime-v6.6 post-retrieval orchestration
-
-This is a deliberate development hybrid. Candidate representations remain the
-frozen v6.6 Retrieval-V2 generation until a v6.7 representation rebuild is
-explicitly performed. The query semantic record, however, must use the current
-Runtime-v6.7 semantic engine so post-v6.6 detector/resolver changes are visible.
-
-No runtime_v6_5 import is permitted.
+`ReactionRetriever` aliases the historical `V66Retriever` class. Older class
+and scoring names are compatibility/provenance identifiers, not statements
+about the scientific authority of any chosen library. Query records are built
+by the installed RXNI semantic engine; stored profiles are read from the
+configured V2 representation provider and can have their own independently
+attested generation lineage. Preserve all stored keys/hashes/scoring contracts.
 """
 
 from __future__ import annotations

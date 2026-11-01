@@ -1,6 +1,6 @@
 # RXNI examples
 
-Start with [`../docs/getting-started.md`](../docs/getting-started.md), then the four tutorials in `../docs/tutorials/`.
+Start with [`../docs/getting-started.md`](../docs/getting-started.md), then the seven tutorials in `../docs/tutorials/`.
 
 `data/demo_reactions.smi` contains original toy reaction strings, **not** a reaction library or scientific benchmarking gold set.
 

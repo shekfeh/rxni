@@ -1,32 +1,50 @@
-# RXNI v0.1 — explicit allowlist for redistributable release documentation
-# Do not replace with recursive-include of the private development tree.
+# Explicit public-source allowlist: no private development trees or corpora.
 include README.md
 include LICENSE
+include MANIFEST.in
 include docs/api-quickstart.md
+include docs/architecture.md
+include docs/chemkn-provider-v0.1.md
 include docs/cli-reference.md
+include docs/compatibility-identifiers.md
+include docs/distribution-rights-checklist.md
+include docs/foundation-schema-profiles.md
 include docs/getting-started.md
 include docs/index.md
+include docs/input-schema-profiles.md
+include docs/library-building.md
+include docs/library-distribution.md
+include docs/library-formats.md
 include docs/licensing-and-data.md
+include docs/provenance-summary-v0.1.md
+include docs/release-limits-v0.1.md
+include docs/version-contracts.md
+include docs/v2-custom-profiles.md
+include docs/v2-storage-schema.md
+include docs/zenodo-dataset-deposit.md
+include docs/release/RELEASE_NOTES_v0.1.0.md
+include docs/release/RELEASE_NOTES_v0.1.1_CANDIDATE.md
+include docs/release/RIGHTS_REVIEW.md
+include docs/release/VALIDATION_SCOPE.md
 include docs/tutorials/01-retrieval.md
 include docs/tutorials/02-analysis-api.md
 include docs/tutorials/03-source-schema.md
 include docs/tutorials/04-foundation-schema.md
+include docs/tutorials/05-download-and-use-library.md
+include docs/tutorials/06-build-library-from-sources.md
+include docs/tutorials/07-template-catalogue-and-provenance.md
 include examples/README.md
 include examples/data/demo_reactions.smi
 include examples/scripts/retrieve_from_core.sh
-include docs/architecture.md
-include docs/version-contracts.md
-include docs/input-schema-profiles.md
-include docs/foundation-schema-profiles.md
-include docs/release-limits-v0.1.md
-include docs/distribution-rights-checklist.md
+include examples/custom-v2-schema.json
 include examples/profiles/crd25-uspto-v023a.json
 include examples/profiles/historical-v67.json
 include examples/profiles/custom-csv.json
 include examples/profiles/foundation-schema-example.json
+include scripts/release/finalize_uspto_historical.py
+include scripts/release/prepare_zenodo_dataset.py
+include scripts/release/replay_aizynth_template_hashes.py
+include scripts/release/verify_published_library.py
+include scripts/release/check_dist_contents.py
 recursive-include tests *.py
 global-exclude __pycache__ *.pyc *.pyo .DS_Store
-include docs/chemkn-provider-v0.1.md
-include docs/provenance-summary-v0.1.md
-include examples/chemkn/cards.example.jsonl
-include examples/chemkn/method_links.example.jsonl

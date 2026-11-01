@@ -27,7 +27,7 @@ Historical audit of the *specific V5 template catalogue used by this foundation*
 import pyarrow.parquet as pq
 from rxni.retrieval.libraries import resolve_library
 
-root = '/data/RXNI-Historical-USPTO-r1'
+root = '/data/uspto_1976_2016_rxni_library'
 lib = resolve_library(root)
 catalog = pq.read_table(
     f'{root}/template_catalog.parquet',
@@ -46,7 +46,7 @@ by_hash = {
     for x in catalog.select(['retro_template_hash', 'retro_template_smarts']).to_pylist()
 }
 
-# `result` is the dictionary returned by V66Retriever.retrieve(...)
+# `result` is the dictionary returned by ReactionRetriever.retrieve(...)
 for member in result.get('members', [])[:5]:
     key = member.get('template_hash')
     print(key, by_hash.get(key))

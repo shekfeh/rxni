@@ -1,0 +1,39 @@
+name: RXNI public package CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-and-package:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install RXNI and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[api,dev]'
+      - name: Run public tests (no private datasets)
+        run: python -m pytest -q tests
+      - name: Exercise installed console commands
+        run: |
+          rxni --version
+          rxni retrieve --help
+          rxni-build-library --help
+          rxni-verify-library --help
+      - name: Build wheel and source distribution
+        run: python -m build
+      - name: Check distribution contents and requirements
+        run: python scripts/release/check_dist_contents.py dist
+      - name: Validate distribution metadata
+        run: python -m twine check dist/*
