@@ -87,7 +87,47 @@ def verify_library(root: Path, *, smoke: bool = False) -> dict:
         raise ValueError("Empty template catalogue")
     if smoke:
         from rxni.integration import ReactionRetriever
-        rxn = pf.read_row_group(0, columns=["reaction"])["reaction"][0].as_py()
+        from rxni.input_validation import (
+            ReactionMappingError,
+            require_mapped_reaction,
+        )
+
+        rxn = None
+        examined = 0
+        scan_limit = min(pf.metadata.num_rows, 10000)
+
+        for batch in pf.iter_batches(
+            batch_size=128,
+            columns=["reaction"],
+        ):
+            for value in batch.column(0).to_pylist():
+                if examined >= scan_limit:
+                    break
+                examined += 1
+
+                if not isinstance(value, str):
+                    continue
+
+                try:
+                    require_mapped_reaction(value)
+                except ReactionMappingError:
+                    continue
+
+                rxn = value
+                break
+
+            if rxn is not None or examined >= scan_limit:
+                break
+
+        if rxn is None:
+            raise ValueError(
+                "No fully mapped smoke-test reaction found "
+                f"among {examined} inspected library records"
+            )
+
+        print("PASS mapped smoke-query selection",
+              "inspected", examined)
+
         rt = ReactionRetriever(root)
         try:
             result = rt.retrieve(rxn, mode="sem_multi", top_k=5, max_members=500, member_limit=10)

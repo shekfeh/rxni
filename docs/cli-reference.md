@@ -1,56 +1,77 @@
-# RXNI CLI reference — v0.1.0
+# RXNI CLI reference — audited 0.1.1 source candidate
 
-The following entry points and `retrieve` arguments were exercised by independent-install regression scripts during R4D–R4E. They are intended for a **validated local library**.
+The original published software tag is `v0.1.0`; the audited `0.1.1` source was installed independently from commit `5e030e388118024627f98aa4de7d58fd6ee706c8`. Use the help of your installed version as the source of exact available flags.
 
-## Top-level commands
-
-| Command | Purpose | Verification |
-| --- | --- | --- |
-| `rxni --help` | Main interface help | Installed wheel smoke |
-| `rxni retrieve --help` | Retrieval argument discovery | Main interface subcommand |
-| `rxni analyze --help` | Analysis argument discovery | Command documented in public README; use local help to confirm syntax |
-| `rxni-summary --help` | Summary interface | Installed wheel smoke |
-| `rxni-batch --help` | Batch interface | Installed wheel smoke |
-
-**Do not assume an option accepted by `retrieve` is also accepted by `analyze` or `batch`.** Consult their actual help in your installed RXNI version.
-
-## Retrieving reactions
+## Installed entry points
 
 ```bash
-rxni retrieve \
-  --library /absolute/path/to/candidate_library \
-  --reaction 'CC(=O)O.OCC>>CC(=O)OCC' \
-  --format json \
-  --top-k 5 \
-  --candidate-budget 500
+rxni --version
+rxni --help
+rxni retrieve --help
+rxni analyze --help
+rxni conditions --help
+rxni-verify-library --help
+rxni-build-library --help
+rxni-summary --help
+rxni-batch --help
 ```
 
-Options exercised by clean-install tests:
+The first-time-user path is [Tutorial 01](tutorials/01-download-verify-library.md), followed by [Tutorial 02](tutorials/02-retrieval.md).
 
-- `--library`: path to compatible retrieval library.
-- `--reaction`: reaction SMILES in `reactants>agents>products` notation; `>>` indicates an empty agent section.
-- `--format json`: machine-readable JSON output.
-- `--top-k 5`: request up to five top results.
-- `--candidate-budget 500`: configure candidate consideration budget.
+## Example retrieval (mapped query)
 
-The schema and field names in JSON outputs depend on the versioned scientific contract. Avoid treating a matching top reaction as proof that a suggested condition is experimentally suitable.
-
-## Environment configuration
-
-For API startup:
+After downloading and verifying the published dataset, export `RXNI_LIBRARY` and select a real mapped reaction:
 
 ```bash
-export REACTION_INTELLIGENCE_LIBRARY=/absolute/path/to/validated/library
+REACTION=$(python - "$RXNI_LIBRARY" <<'PY'
+import sys
+import pyarrow.parquet as pq
+from rxni.retrieval.libraries import resolve_library
+lib = resolve_library(sys.argv[1])
+print(pq.ParquetFile(lib.representations).read_row_group(0, columns=['reaction'])['reaction'][0].as_py())
+PY
+)
+rxni retrieve --library "$RXNI_LIBRARY" --reaction "$REACTION" \
+  --mode sem_multi --format json --top-k 5 --candidate-budget 500 --pager never
+```
+
+A reaction needs meaningful reactant/product atom mapping for graph-edit interpretation. The tested prepatch 0.1.1 code did **not** reject missing mapping and could return irrelevant `NO_MAPPED_BOND_EDIT` candidates. A strict mapping validator is a **future code-change dependency** for these docs. `--candidate-budget` is a candidate cap, not a quality guarantee; larger budgets may broaden chemically different events.
+
+## Structured analysis
+
+```bash
+rxni analyze --library "$RXNI_LIBRARY" --reaction "$REACTION" \
+  --mode sem_multi --top-k 10 --candidate-budget 1000 \
+  --member-limit 10 --review events --review fgi --review axes \
+  --format json --output "$HOME/rxni-analysis.json" --pager never
+```
+
+Do not assume that all `retrieve` flags are accepted by `analyze` and `conditions`; consult the installed `--help` subcommands.
+
+## Method-family landscape
+
+```bash
+rxni conditions --library "$RXNI_LIBRARY" --reaction "$REACTION" \
+  --profile-methods --top-k 5 --summary full --pager never
+```
+
+This explores method-family evidence, not validated solvent/base/temperature/yield recommendations. Inspect available candidate semantics, support and missing conditions before drawing chemical conclusions.
+
+## Verification and builder
+
+```bash
+rxni-verify-library --library "$RXNI_LIBRARY" --smoke
+rxni-build-library profiles
+rxni-build-library inspect-runtime --root /absolute/path/to/rxni/checkout --runtime v6.7
+```
+
+The installed verifier was tested on the published Zenodo library. The public builder was exercised on a small aligned 16-reaction fixture, through candidate assembly and a self-retrieval. New libraries require full provenance and separate scientific certification; see [Tutorial 07](tutorials/07-build-library-from-sources.md).
+
+## HTTP configuration
+
+```bash
+export REACTION_INTELLIGENCE_LIBRARY="$RXNI_LIBRARY"
 uvicorn rxni.api.app:app --host 127.0.0.1 --port 8000
 ```
 
-The name of this environment variable is inherited from the frozen compatibility layer. It does not imply a private code dependency.
-
-## CLI troubleshooting
-
-- `No template library configured`: configure `REACTION_INTELLIGENCE_LIBRARY` before starting the server, or use explicit `ApiSettings`.
-- Missing index / locator / metadata: rebuild or validate the complete library. A source-schema profile alone cannot repair it.
-- Invalid reaction SMILES: ensure both reactant and product sections are present and that input is chemically parsable.
-- No relevant match: inspect the candidate library coverage and ranking rather than assuming an algorithm failure.
-
-For a reproducible tutorial using a selected reaction from a real Parquet fixture, see [Tutorial 01](tutorials/01-retrieval.md).
+See [Tutorial 03](tutorials/03-analysis-api.md). Do not expose local datasets or raw runtime results on a public server without security review.

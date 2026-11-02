@@ -27,6 +27,8 @@ include = ["rxni*"]
 "rxni-batch" = "rxni.batch_cli:main"
 
 "rxni-build-library" = "rxni.builder.cli:main"
+"rxni-map-reaction" = "rxni.optional_mapping:main"
+"rxni-audit-rdkit" = "rxni.rdkit_record_audit:main"
 "rxni-verify-library" = "rxni.verify_library:main"
 [project.optional-dependencies]
 api = [

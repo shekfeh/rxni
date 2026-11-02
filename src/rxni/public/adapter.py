@@ -486,6 +486,7 @@ def adapt_runtime_result(
     )
 
     diagnostics = DiagnosticsSection(
+        mapping_provenance=_as_dict(raw.get("mapping_provenance")),
         timings=timings if request.options.include_diagnostics else {},
         missing_provider_count=(
             _optional_nonnegative_int(raw.get("missing_provider"))
@@ -592,6 +593,7 @@ def adapt_runtime_result(
             warnings=warnings,
         ),
         retrieval=RetrievalSection(
+            quality=_as_dict(raw.get("retrieval_quality")),
             mode=mode,
             ranking_mode=ranking_mode,
             candidate_policy=str(
@@ -614,6 +616,7 @@ def adapt_runtime_result(
             candidates=candidates,
         ),
         conditions=ConditionsSection(
+            evidence_assessment=_as_dict(raw.get("condition_evidence_assessment")),
             supplied=request.conditions,
             has_evidence=bool(
                 normalized_evidence.get(

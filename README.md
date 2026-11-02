@@ -1,70 +1,84 @@
 # RXNI — Reaction Intelligence
 
-**Published initial software release: v0.1.0. Proposed maintenance release: v0.1.1 (not yet tagged).** RXNI provides deterministic reaction-semantic analysis, library-based structural/semantic retrieval and exploration of recorded reaction conditions. It does **not** establish experimental reaction success or mechanistic electron-pushing predictions.
+**Software release status:** `v0.1.0` is the published release. This documentation refresh targets the public `0.1.1` maintenance code at commit `5e030e388118024627f98aa4de7d58fd6ee706c8`; a `v0.1.1` Git tag and release assets were not verified as part of this documentation patch. **Scientific baseline:** Reaction Intelligence v6.7.0. RXNI supports reaction-semantic analysis, indexed structural/semantic retrieval, and exploration of recorded reaction methods. It does **not** establish experimental success, validated synthetic conditions, or explicit electron-pushing mechanisms.
 
-## Install from source
+## Install the software
 
-In a supported Python environment (Python 3.10 or later):
+Python 3.10 or newer is required. For a cloned public RXNI checkout:
 
 ```bash
-python -m pip install -e .
-# API and optional rich interface, if needed:
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -U pip
 python -m pip install -e '.[api,cli]'
-```
-
-The optional ChemKN interface accepts explicitly supplied normalized JSONL knowledge cards (`RXNI_KNOWLEDGE_CARDS` or `--knowledge-cards`) and bundles no publisher-specific adapters or datasets. No external library is downloaded with the core package. See `docs/chemkn-provider-v0.1.md`.
-
-## Inspect the command line
-
-```bash
 rxni --version
 rxni --help
-rxni retrieve --help
-rxni analyze --help
-rxni-summary --help
-rxni-batch --help
-rxni-build-library --help
+rxni-verify-library --help
 ```
 
-Running retrieval requires a locally prepared, validated RXNI library. Start with [Tutorial 05 — download and use a library](docs/tutorials/05-download-and-use-library.md) and [library distribution status](docs/library-distribution.md). The selected historical USPTO data package is **not yet published**; a public URL will only be added once scientific and redistribution-rights gates have been addressed. The internal V2 representation format is separate from user-facing version-independent dataset filenames.
+The optional ChemKN interface accepts separately supplied normalized JSONL knowledge cards (`RXNI_KNOWLEDGE_CARDS` / `--knowledge-cards`); no publisher-specific database or historical reaction library is bundled in the software installation. See [ChemKN provider](docs/chemkn-provider-v0.1.md).
+
+## Download the published historical reaction library
+
+**[RXNI Historical USPTO Reaction Library — Zenodo record 23856755](https://zenodo.org/records/23856755)**. The publicly accessible archive is independent of the GitHub source checkout.
+
+```bash
+mkdir -p "$HOME/rxni-data"
+cd "$HOME/rxni-data"
+curl -fL --retry 5 -C - \
+  -o uspto_1976_2016_rxni_library.zip \
+  'https://zenodo.org/records/23856755/files/uspto_1976_2016_rxni_library.zip?download=1'
+echo '5f31b689c942359c95e43debc0b8e6a8141fbb200d890fdea544ac3cd3a2a1ca  uspto_1976_2016_rxni_library.zip' | sha256sum -c -
+unzip -t uspto_1976_2016_rxni_library.zip
+unzip -q uspto_1976_2016_rxni_library.zip
+export RXNI_LIBRARY="$HOME/rxni-data/uspto_1976_2016_rxni_library"
+(cd "$RXNI_LIBRARY" && sha256sum -c SHA256SUMS)
+rxni-verify-library --library "$RXNI_LIBRARY" --smoke
+```
+
+The archive is **1,444,488,348 bytes** with the SHA256 shown above. The released library has **812,916** stored representations and **42,128** template SMARTS. `rxni-verify-library` is available in the tested `0.1.1` installed code; users of the earlier `v0.1.0` release may instead use the checked-out `scripts/release/verify_published_library.py` verification helper. The standalone verification step checks technical integrity and a retrieval smoke, **not** chemical accuracy or independent redistribution-rights clearance. The actual Zenodo record should be consulted for its canonical DOI and current citation metadata; none is guessed here.
+
+## First retrieval — mapped reactions required for scientific interpretation
+
+The audited v0.1.1 runtime still accepts unmapped input, but it can produce the non-informative `NO_MAPPED_BOND_EDIT` signature and unrelated apparent `exact_edit` hits. **Do not use unmapped inputs.** These revised tutorials are prepared for a forthcoming **strict mapping preflight** that will reject unmapped or insufficiently mapped reaction queries; **the runtime code change must land and pass tests before these docs are published as describing enforced behavior**.
+
+Get a real mapped query from the published library:
+
+```bash
+REACTION=$(python - "$RXNI_LIBRARY" <<'PY'
+import sys
+import pyarrow.parquet as pq
+from rxni.retrieval.libraries import resolve_library
+lib = resolve_library(sys.argv[1])
+pf = pq.ParquetFile(lib.representations)
+print(pf.read_row_group(0, columns=['reaction'])['reaction'][0].as_py())
+PY
+)
+rxni retrieve --library "$RXNI_LIBRARY" --reaction "$REACTION" \
+  --mode sem_multi --top-k 5 --candidate-budget 500 --pager never
+```
+
+This is an **in-corpus self-retrieval test**, not an independent retrieval-accuracy benchmark. Consult [Getting started](docs/getting-started.md) and the [tutorials, in learning order](docs/index.md).
 
 ## HTTP API
 
-Install with `.[api]`, configure the library location, then start the ASGI app:
-
 ```bash
-export REACTION_INTELLIGENCE_LIBRARY=/path/to/validated/rxni/library
+export REACTION_INTELLIGENCE_LIBRARY="$RXNI_LIBRARY"
 uvicorn rxni.api.app:app --host 127.0.0.1 --port 8000
 ```
 
-The API configuration is resolved on the first ASGI invocation. Importing `rxni.api.config` requires neither a configured library nor FastAPI. For embedded integration, call `rxni.api.create_app(settings=...)` with explicit configuration.
+See [Tutorial 03](docs/tutorials/03-analysis-api.md) for health, schema, analysis and restricted raw-result tests. Use `rxni retrieve --help`, `rxni analyze --help`, `rxni conditions --help`, `rxni-build-library --help` for the CLI version installed locally.
 
-## Documentation and tutorials
+## Public library builder and version boundaries
 
-Start at the [documentation index](docs/index.md). In addition to installation, the CLI, API and schema-profile guides, new tutorials cover:
+The installed public builder can create a **new** Core and V2 auxiliary from a properly aligned, licensed source export. This was independently exercised on a **16-reaction** fixture through Core validation, native producer execution, V2 assembly and self-retrieval. It does **not** recreate the historical P6/Ring031 dataset bit-for-bit or certify chemical accuracy. See [Tutorial 07: library construction](docs/tutorials/07-build-library-from-sources.md).
 
-- [Tutorial 05 — downloading and using a prepared library](docs/tutorials/05-download-and-use-library.md).
-- [Tutorial 06 — complete source-to-RXNI library construction](docs/tutorials/06-build-library-from-sources.md), including rxnutils/AiZynthTrain, cleaned template extraction, Parquet Core, native indexes, stored retrieval and release checks.
-- [Tutorial 07 — reaction template SMARTS and scientific provenance](docs/tutorials/07-template-catalogue-and-provenance.md).
+New RXNI Core template IDs use `SHA256(exact retrosynthetic SMARTS)` while the published historical AiZynthTrain catalogue retains `ReactionTemplate.hash_from_bits()` IDs. The namespaces are **not interchangeable**. The historical retrieval manifest retains its original opaque V2 build ID prefix (`v66_`) while declaring v6.7 semantic authority; this is not a request to modify the frozen storage ABI.
 
-The public Core builder uses `SHA256(exact SMARTS)` for *new Core exports*. Historical AiZynthTrain template IDs are instead generated by `ReactionTemplate.hash_from_bits()`. They are **not interchangeable**, and schema mapping alone does not convert between them. See the [builder guide](docs/library-building.md).
+## Scientific limitations, data rights and provenance
 
-## Validation and scope
+Historical scientific provenance retains a known review case and an unpromoted source-candidate status (`CANDIDATE_BUILD_COMPLETE_NOT_PROMOTED`). Technical portability and the Zenodo publication do **not** override these scientific caveats. Read the archive's `SCIENTIFIC_PROVENANCE.json` and `RELEASE_AUDIT.json`, [release limits](docs/release-limits-v0.1.md) and [distribution status](docs/library-distribution.md).
 
-The migration and integration evidence includes 384 paired reaction-case parity evaluations, schema-profile checks and independently installed CLI/HTTP API checks. These establish migration equivalence and interface compatibility within the tested conditions, **not** independent chemical accuracy or universal library ranking quality.
+RXNI original software is **Apache-2.0** ([LICENSE](LICENSE)); the processed historical dataset's stated license is **CC BY 4.0**, with the identified Daniel Lowe USPTO upstream source marked **CC0** at Figshare. These declarations do not themselves resolve every possible upstream contribution or independent rights review. See [licensing/data](docs/licensing-and-data.md) and the [rights checklist](docs/distribution-rights-checklist.md).
 
-The selected historical USPTO P6/Ring031 candidate contains 812,916 stored reaction records and 42,128 template SMARTS, with 42,128/42,128 historical fingerprint-based hashes reproduced and a 12-case stored/public-profile agreement test. That candidate's source provenance explicitly records an **unpromoted** status and a known scientific review case; its portability evidence is not an independent whole-corpus chemical acceptance. See [publication gates](docs/library-distribution.md) and [release limits](docs/release-limits-v0.1.md).
-
-## Installed library verification
-
-From the proposed `v0.1.1` release, `rxni-verify-library --library /path/to/uspto_1976_2016_rxni_library --smoke` verifies package checksums, storage format and one real retrieval. Until that release is tagged, use `scripts/release/verify_published_library.py` from the current checkout. See [public/compatibility identifiers](docs/compatibility-identifiers.md).
-
-## License and data rights
-
-RXNI original software is licensed under the **Apache License, Version 2.0** (SPDX `Apache-2.0`); see [LICENSE](LICENSE). The software license does not grant rights to third-party chemistry collections, commercial textbooks, external databases or historical USPTO-derived files of unresolved downstream rights. The identified Daniel Lowe USPTO source is marked CC0 at its Figshare deposit; the processed dataset has CC BY 4.0 selected for its Zenodo record. Neither fact automatically clears additional upstream materials, database rights or the unresolved chemical-review scope. See [licensing and data](docs/licensing-and-data.md) and the [distribution-rights checklist](docs/distribution-rights-checklist.md).
-
-The selected historical archive is `uspto_1976_2016_rxni_library.zip` (1,444,488,348 bytes; SHA256 `5f31b689c942359c95e43debc0b8e6a8141fbb200d890fdea544ac3cd3a2a1ca`). The DOI/download URL will be added only after the public Zenodo record exists.
-
-## Rule provenance and data boundary
-
-RXNI's 82 directional FGI rules are project-developed heuristics, iteratively refined against USPTO 1960–2016 reaction/template datasets. The underlying source reaction datasets and private evaluation truth are not bundled with the software. See [the provenance summary](docs/provenance-summary-v0.1.md).
+The **82 directional FGI rules** are project-authored heuristics developed using USPTO 1960–2016 reaction/template data; underlying source datasets and private evaluation truth are not included with the software. See [provenance summary](docs/provenance-summary-v0.1.md).

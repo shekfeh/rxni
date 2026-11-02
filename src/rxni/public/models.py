@@ -197,6 +197,7 @@ class TemplateHit(PublicModel):
 
 
 class RetrievalSection(PublicModel):
+    quality: dict[str, Any] = Field(default_factory=dict)
     mode: str
     ranking_mode: str
     candidate_policy: str
@@ -217,6 +218,7 @@ class MethodLandscapeView(PublicModel):
 
 
 class ConditionsSection(PublicModel):
+    evidence_assessment: dict[str, Any] = Field(default_factory=dict)
     supplied: ConditionInput
     has_evidence: bool
     normalized_evidence: dict[str, Any] = Field(default_factory=dict)
@@ -241,6 +243,7 @@ class ChemKNSection(PublicModel):
 
 
 class DiagnosticsSection(PublicModel):
+    mapping_provenance: dict[str, Any] = Field(default_factory=dict)
     timings: dict[str, float] = Field(default_factory=dict)
     missing_provider_count: int | None = Field(default=None, ge=0)
     bulk_provider: dict[str, Any] = Field(default_factory=dict)

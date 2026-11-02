@@ -1,33 +1,53 @@
 # RXNI HTTP API — quick reference
 
-Install `rxni[api]`, configure a validated local library, and run the ASGI entry point:
+Requires an installed RXNI with API dependencies and a complete compatible local library. Obtain/verify the [Zenodo historical library](https://zenodo.org/records/23856755) following [Tutorial 01](tutorials/01-download-verify-library.md).
 
 ```bash
-export REACTION_INTELLIGENCE_LIBRARY=/absolute/path/to/validated/library
+python -m pip install -e '.[api]'
+export REACTION_INTELLIGENCE_LIBRARY="$RXNI_LIBRARY"
 uvicorn rxni.api.app:app --host 127.0.0.1 --port 8000
 ```
 
-A completed R4D–R4E test ran the same app through FastAPI's `TestClient` and confirmed the endpoints below for two distinct test libraries. Actual remote-server requests should be re-tested against your installed environment.
+The independent fresh-machine WSL test of the `0.1.1` source returned HTTP **200** for `GET /healthz`, `GET /v1/info`, `GET /v1/schema/request` and valid `POST /v1/analyze`, and HTTP **403** for a forbidden raw-runtime result request. This is interface acceptance, **not** a comprehensive security or chemical-validation audit.
 
-| Endpoint | Method | Expected successful code |
-| --- | --- | --- |
-| `/healthz` | GET | 200 |
-| `/v1/info` | GET | 200 |
-| `/v1/schema/request` | GET | 200 |
-| `/v1/analyze` | POST | 200 for valid supported input |
+In a second terminal:
 
 ```bash
-curl --fail-with-body http://127.0.0.1:8000/healthz
-curl --fail-with-body http://127.0.0.1:8000/v1/info
-curl --fail-with-body http://127.0.0.1:8000/v1/schema/request
-
-curl --fail-with-body -sS http://127.0.0.1:8000/v1/analyze \
-  -H 'Content-Type: application/json' \
-  -d '{"reaction":"CC(=O)O.OCC>>CC(=O)OCC","options":{"top_k":5,"candidate_budget":500}}'
+curl -sS http://127.0.0.1:8000/healthz
+curl -sS http://127.0.0.1:8000/v1/info
+curl -sS http://127.0.0.1:8000/v1/schema/request
 ```
 
-The requests above use a simple illustrative reaction. Scientific usefulness and retrieval matches are library-dependent. `curl --fail-with-body` is available on recent curl releases; omit that flag if unsupported.
+Construct a request from the published library's **mapped** stored reaction:
 
-A request for `include_raw_runtime_result=true` is rejected by the validated default API policy (HTTP 403). Do not expose local files, sensitive libraries or the raw runtime endpoint publicly without an independent security review.
+```bash
+python - "$RXNI_LIBRARY" <<'PY'
+import json, sys
+from pathlib import Path
+import pyarrow.parquet as pq
+from rxni.retrieval.libraries import resolve_library
+lib = resolve_library(sys.argv[1])
+rxn = pq.ParquetFile(lib.representations).read_row_group(0, columns=['reaction'])['reaction'][0].as_py()
+Path('/tmp/rxni_api_request.json').write_text(json.dumps({
+    'reaction':rxn, 'options':{'top_k':5,'candidate_budget':500}
+}))
+PY
 
-See [Tutorial 02](tutorials/02-analysis-api.md) for a complete guided API example.
+curl -sS -o /tmp/rxni_api_response.json -w 'HTTP %{http_code}\n' \
+  http://127.0.0.1:8000/v1/analyze \
+  -H 'Content-Type: application/json' \
+  --data-binary @/tmp/rxni_api_request.json
+```
+
+For the forbidden raw result boundary:
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  http://127.0.0.1:8000/v1/analyze \
+  -H 'Content-Type: application/json' \
+  -d '{"reaction":"[CH3:1][CH2:2][Br:3].[NH3:4]>>[CH3:1][CH2:2][NH2:4]","options":{"include_raw_runtime_result":true}}'
+```
+
+The experimental sample is syntactically mapped but not promised to match this corpus. The intended strict mapping code patch will reject missing/inconsistent atom mapping at CLI, Python and HTTP boundaries; HTTP error semantics must be tested and documented **after** that code patch, not guessed now. A method label or stored evidence field is not a validated synthetic procedure.
+
+See [Tutorial 03](tutorials/03-analysis-api.md) for the guided workflow and [release limitations](release-limits-v0.1.md) before chemical interpretation.

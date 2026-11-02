@@ -48,3 +48,7 @@ include scripts/release/verify_published_library.py
 include scripts/release/check_dist_contents.py
 recursive-include tests *.py
 global-exclude __pycache__ *.pyc *.pyo .DS_Store
+
+recursive-include docs *.md
+include tests/test_strict_mapping_v011.py
+include tests/test_builder_regression_v011.py

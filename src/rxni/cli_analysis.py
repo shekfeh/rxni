@@ -1212,7 +1212,17 @@ def _render(args, result: dict[str, Any]) -> str:
         return json.dumps(result, indent=2, ensure_ascii=False, default=str)
     if args.format in {"csv", "tsv"}:
         return _render_delimited(args, result)
-    return _render_text(args, result)
+    text = _render_text(args, result)
+    q = result.get("retrieval_quality") or {}
+    evidence = result.get("condition_evidence_assessment") or {}
+    if q or evidence:
+        text += "\n\nRXNI EVIDENCE BOUNDARY\n"
+        text += f"- candidate channels: {q.get('selected_channel_counts')}\n"
+        text += f"- primary-event agreement: {q.get('primary_event_agreement_fraction')}\n"
+        text += f"- broad fallback fraction: {q.get('broad_fallback_fraction')}\n"
+        text += f"- candidate budget saturated: {q.get('candidate_budget_saturated')}\n"
+        text += f"- condition recommendation: {evidence.get('recommendation_status')}\n"
+    return text
 
 
 def _page_or_print(text: str, mode: str) -> None:
@@ -1311,7 +1321,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     if requested_reviews.intersection({"methods", "chemkn"}):
         args.profile_methods = True
 
-    result = _run(args)
+    from rxni.input_validation import ReactionMappingError
+    from rxni.optional_mapping import MappingBackendError
+    try:
+        result = _run(args)
+    except (ReactionMappingError, MappingBackendError) as exc:
+        ap.error(str(exc))
     if args.output:
         _write_json(args.output, result)
 

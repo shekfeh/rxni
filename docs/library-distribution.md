@@ -2,7 +2,14 @@
 
 **Current selected source:** `runs/retrieval_v67_reprofile/v67_retrieval_v2_full_candidate_P6_Ring031_01`.
 
-**Data status (1 November 2026):** the 1,444,488,348-byte ZIP is prepared, full checksums and clean v0.1.0 installation/retrieval passed. The original Ring031 scientific source remains an unpromoted candidate; the known review case is disclosed. The dataset was being uploaded to a Zenodo draft; no verified public DOI/URL has been supplied. Full derivative-source rights review and tomorrow's independent WSL test remain open.
+**Data status (2 November 2026):** The 1,444,488,348-byte library archive is publicly available at [Zenodo record 23856755](https://zenodo.org/records/23856755). A separate WSL2 machine verified its archive checksum, all 12 internal checksums, 812,916 representations, 42,128 SMARTS and real retrieval against installed 0.1.1 code. The original P6/Ring031 source remains an unpromoted scientific candidate with a known review case; independent chemical and rights assessments are separate.
+
+## Public download and checksum
+
+- [Zenodo record 23856755](https://zenodo.org/records/23856755)
+- [Archive](https://zenodo.org/records/23856755/files/uspto_1976_2016_rxni_library.zip?download=1)
+- SHA256: `5f31b689c942359c95e43debc0b8e6a8141fbb200d890fdea544ac3cd3a2a1ca`
+- Download availability and technical checks do not override scientific/rights caveats.
 
 ## Distribution specification
 
@@ -25,7 +32,7 @@ Use `rxni.retrieval.libraries.resolve_library()` to load the descriptor. Keep in
 **Selected archive:** `uspto_1976_2016_rxni_library.zip`
 **SHA256:** `5f31b689c942359c95e43debc0b8e6a8141fbb200d890fdea544ac3cd3a2a1ca`
 **Extracted folder:** `uspto_1976_2016_rxni_library/`
-**Compatible software:** released `v0.1.0` (independent clean-venv retrieval verified).
+**Compatible software:** published `v0.1.0` and independently installed `0.1.1` maintenance source candidate (not independently verified as a tagged release).
 
 ## Confirmed historical evidence
 
@@ -59,7 +66,7 @@ The finalizer refuses to overwrite `--out`, captures the original scientific rec
 
 - [x] Create ZIP, check SHA256 and perform independent clean-venv technical retrieval on the development machine.
 - [ ] Perform the second-machine WSL acceptance tomorrow; no result is claimed today.
-- [ ] Verify final published DOI and update download instructions after Zenodo publication.
+- [x] Verify the public Zenodo record URL and update downloads; consult the record for canonical DOI/citation metadata.
 - [ ] Confirm remaining derivative inputs and attribution; parent Lowe Figshare source is marked CC0 and derivative Zenodo CC BY 4.0 was selected.
 
 - [ ] Independent review/approval of third-party corpus and derivative SMARTS redistribution rights, original source names, attribution and data license. Do not infer rights from RXNI Apache-2.0 software license or USPTO patent publication alone.
@@ -68,13 +75,13 @@ The finalizer refuses to overwrite `--out`, captures the original scientific rec
 - [ ] Document the extra metadata-only lookup row and the one-row-per-reaction lookup policy for multi-template membership.
 - [ ] Decide dataset version, DOI host and immutable release citation; include exact checksum and source lineage in Zenodo metadata.
 - [ ] Inspect archives for unwanted local paths, private evidence, unlicensed contents and identifiable/private data.
-- [ ] Publish and test download/extraction and full checksums; then update RXNI README/docs with the actual URL/DOI.
+- [x] Public download/extraction, archive SHA256 and internal SHA256SUMS tested independently on WSL; README/tutorial URL updated. This does not certify chemical accuracy or redistribution rights.
 
 **Hosting:** Keep only documentation and small validation scripts in Git. GitHub ordinary repository objects are limited to 100 MB; GitHub Release assets are limited to less than 2 GiB each. Zenodo accepts 50 GB across up to 100 files per record. Prefer Zenodo for these ~2+ GB data and link the immutable DOI from GitHub. Confirm current host limits at publication.
 
 ## Related docs
 
-- `tutorials/05-download-and-use-library.md`
-- `tutorials/06-build-library-from-sources.md`
-- `tutorials/07-template-catalogue-and-provenance.md`
+- `tutorials/01-download-verify-library.md`
+- `tutorials/07-build-library-from-sources.md`
+- `tutorials/04-template-catalogue-and-provenance.md`
 - `library-building.md`, `input-schema-profiles.md`, `foundation-schema-profiles.md`, `licensing-and-data.md`.

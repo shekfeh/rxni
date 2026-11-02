@@ -20,6 +20,9 @@ import time
 # Query record construction is the semantic routing seam: use the current
 # Runtime-v6.7 semantic engine while leaving the retrieval/scoring algorithms
 # frozen at v6.6.
+from rxni.input_validation import require_mapped_reaction
+from rxni.optional_mapping import prepare_query
+from rxni.retrieval_diagnostics import summarize_retrieval, assess_conditions
 from rxni.retrieval.record import build_retrieval_record
 
 from rxni.retrieval import (
@@ -363,6 +366,9 @@ class V66Retriever:
         allowed_reaction_keys: set[str] | None = None,
         member_limit: int | None = None,
     ) -> dict[str, Any]:
+        original_reaction = reaction
+        reaction, mapping_provenance = prepare_query(reaction)
+        mapping_qc = require_mapped_reaction(reaction)
         t0 = time.perf_counter()
         timings = {}
         qkey = _query_key(reaction)
@@ -372,6 +378,12 @@ class V66Retriever:
             reaction,
             store_readable=False,
         )
+        # Frozen h64 sentinel has no mapped edit. Never use it as exact-edit evidence.
+        no_edit_digest = int.from_bytes(hashlib.blake2b(
+            b"NO_MAPPED_BOND_EDIT", digest_size=8).digest(), "little", signed=False)
+        suppressed_no_edit = (keys.get("forward_edit_signature_hash") == no_edit_digest)
+        if suppressed_no_edit:
+            keys["forward_edit_signature_hash"] = None
         qrec = build_retrieval_record(
             reaction,
             record_id=qkey,
@@ -611,7 +623,22 @@ class V66Retriever:
         total = time.perf_counter() - t0
         timings["total"] = total
 
+        quality = summarize_retrieval(
+            primary_event=primary_event, members=members,
+            generation_counts={k:len(v) for k,v in channel_map.items()},
+            selected_channel_counts=selected_channel_counts,
+            candidate_budget=max_members, selected_count=len(candidate_keys),
+            available_counts=available_counts)
+        quality["no_mapped_bond_edit_exact_channel_suppressed"] = suppressed_no_edit
+        condition_assessment = assess_conditions(query_conditions_supplied=bool(
+            reagents or solvents or catalysts or bases or additives or acids or
+            temperature_c is not None or reaction_time_h is not None or atmosphere or pressure))
         return {
+            "mapping_qc":mapping_qc,
+            "mapping_provenance":mapping_provenance,
+            "original_query_reaction":original_reaction,
+            "retrieval_quality":quality,
+            "condition_evidence_assessment":condition_assessment,
             "runtime_version": "6.7",
             "retrieval_facade":
                 "runtime_v6_7.integration.retriever.V66Retriever",

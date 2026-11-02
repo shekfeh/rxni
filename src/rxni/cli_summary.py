@@ -600,7 +600,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.cmd in {"analyze", "run"} and args.format == "text":
         args.show_templates = True
 
-    result = _run(args)
+    from rxni.input_validation import ReactionMappingError
+    from rxni.optional_mapping import MappingBackendError
+    try:
+        result = _run(args)
+    except (ReactionMappingError, MappingBackendError) as exc:
+        ap.error(str(exc))
     if args.output:
         _write_json(args.output, result)
 

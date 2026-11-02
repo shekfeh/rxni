@@ -1,70 +1,62 @@
-# Getting started with RXNI v0.1.0
+# Getting started — RXNI v0.1.x
 
-RXNI is a Python reaction-semantics and retrieval toolkit. The immutable published software release is **0.1.0**; a maintenance **0.1.1** is being prepared but is not yet tagged; its frozen scientific-method baseline is **Reaction Intelligence v6.7.0**. It does **not** promise chemical reaction success, independent retrieval accuracy, or an electron-pushing mechanism prediction.
+Use a fresh Python 3.10+ virtual environment. The independently tested `0.1.1` code is a maintenance candidate at Git commit `5e030e388118024627f98aa4de7d58fd6ee706c8`; the published software tag as audited remains `v0.1.0`.
 
-## 1. Install
+## 1. Install and inspect
 
-A fresh virtual environment is recommended. The declared Python support floor is 3.10.
+From a cloned RXNI source checkout:
 
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install .
-```
-
-For API and optional rich interface:
-
-```bash
-python -m pip install '.[api,cli]'
-```
-
-For YAML-backed optional adapter functionality:
-
-```bash
-pip install -e .
-# Or, for the public API and CLI:
-pip install -e ".[api,cli]"
-```
-
-Do not expect RXNI to download a reaction corpus or proprietary ChemKN knowledge assets during installation.
-
-## 2. Check the CLI
-
-```bash
-rxni --help
+python -m pip install -U pip
+python -m pip install -e '.[api,cli]'
+rxni --version
 rxni retrieve --help
 rxni analyze --help
-rxni-summary --help
-rxni-batch --help
+rxni conditions --help
+rxni-build-library --help
 ```
 
-`rxni`, `rxni-summary`, and `rxni-batch` are the tested installed entry points. The actual arguments of `analyze` and batch commands should be read from your installed version's `--help`; this document does not invent undocumented options.
+The software installation does **not** download historical reactions, commercial datasets, ChemKN knowledge cards or RXNMapper. Optional external mapping software belongs in a separate environment.
 
-## 3. Obtain a compatible library
+## 2. Obtain and verify public data
 
-RXNI retrieval depends on a **locally prepared, validated library** comprising compatible structural/metadata indexes, retrieval V2 representations and locators. For command examples, set:
+Follow [Tutorial 01](tutorials/01-download-verify-library.md) to fetch the publicly available [RXNI Historical USPTO library](https://zenodo.org/records/23856755), verify the 1,444,488,348-byte archive with the published SHA256, check all internal files, and run `rxni-verify-library --smoke` on installed `0.1.1` code.
+
+The examples below expect:
 
 ```bash
-export RXNI_LIBRARY='/absolute/path/to/validated/library'
+export RXNI_LIBRARY="$HOME/rxni-data/uspto_1976_2016_rxni_library"
 ```
 
-`RXNI_LIBRARY` is only a shell variable used by these tutorials; the internal API's environment variable is `REACTION_INTELLIGENCE_LIBRARY` (see [API tutorial](tutorials/02-analysis-api.md)).
+This variable is used by the tutorial shell commands. The local HTTP server uses `REACTION_INTELLIGENCE_LIBRARY` instead.
 
-A Parquet file containing reactions is **not** by itself a complete retrieval-ready library. Different source datasets cannot be mixed with incompatible index/key namespaces.
-
-## 4. Run a retrieval query
+## 3. Select a mapped reaction that exists in the library
 
 ```bash
-rxni retrieve \
-  --library "$RXNI_LIBRARY" \
-  --reaction 'CC(=O)O.OCC>>CC(=O)OCC' \
-  --format json \
-  --top-k 5 \
-  --candidate-budget 500
+REACTION=$(python - "$RXNI_LIBRARY" <<'PY'
+import sys
+import pyarrow.parquet as pq
+from rxni.retrieval.libraries import resolve_library
+lib = resolve_library(sys.argv[1])
+pf = pq.ParquetFile(lib.representations)
+print(pf.read_row_group(0, columns=['reaction'])['reaction'][0].as_py())
+PY
+)
 ```
 
-This is an **illustrative input**, not a gold-standard result. Its rank positions, matches and conditions depend on your particular library. For a deterministic choice of a real reaction from an installed fixture, see [Tutorial 01](tutorials/01-retrieval.md).
+The query must retain meaningful reactant/product atom mapping. In the audited prepatch `0.1.1` implementation, **unmapped** queries can produce the signature `NO_MAPPED_BOND_EDIT` and misleading unrelated candidates. Strict rejection of unmapped queries is a **planned code patch**, not behavior already verified in `0.1.1`.
+
+## 4. Retrieve candidates
+
+```bash
+rxni retrieve --library "$RXNI_LIBRARY" --reaction "$REACTION" \
+  --mode sem_multi --top-k 5 --candidate-budget 500 --pager never
+```
+
+This intentionally queries a stored reaction and can produce an exact self-hit. Use it only as a read-side smoke test, not as a held-out scientific benchmark. Explore [Tutorial 02](tutorials/02-retrieval.md) for JSON results and interpretation.
 
 ## 5. Continue
 
-Use the [CLI reference](cli-reference.md) for command syntax and [the API tutorial](tutorials/02-analysis-api.md) for JSON analysis. Read [release limitations](release-limits-v0.1.md) before interpreting results.
+See the [tutorial index](index.md), [API guide](tutorials/03-analysis-api.md), [template/provenance guide](tutorials/04-template-catalogue-and-provenance.md) and [release limitations](release-limits-v0.1.md). Building a *new* library is a distinct workflow in [Tutorial 07](tutorials/07-build-library-from-sources.md).

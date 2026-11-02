@@ -286,6 +286,16 @@ def create_app(
                 ),
             )
 
+        # Strict mapping gate before runtime. Mapping may only be enabled
+        # by a trusted process administrator, never by request payload.
+        import os as _rxni_os
+        from rxni.input_validation import require_mapped_reaction, ReactionMappingError
+        if not _rxni_os.environ.get("RXNI_MAPPER_PYTHON"):
+            try:
+                require_mapped_reaction(payload.reaction)
+            except ReactionMappingError as exc:
+                raise HTTPException(status_code=422,detail={
+                    "error":exc.code,"message":exc.message,"mapping_qc":exc.diagnostics}) from exc
         service_obj = request.app.state.ri_service
         executor = request.app.state.runtime_executor
         loop = asyncio.get_running_loop()
@@ -293,11 +303,13 @@ def create_app(
         # Do not let FastAPI/AnyIO choose an arbitrary worker thread here.
         # The same dedicated runtime thread owns both service construction and
         # SQLite-backed retrieval execution.
-        return await loop.run_in_executor(
-            executor,
-            service_obj.analyze_request,
-            payload,
-        )
+        try:
+            return await loop.run_in_executor(
+                executor, service_obj.analyze_request, payload)
+        except (ReactionMappingError, __import__("rxni.optional_mapping",fromlist=["MappingBackendError"]).MappingBackendError) as exc:
+            raise HTTPException(status_code=422, detail={
+                "error":getattr(exc,"code","atom_mapping_failed"),
+                "message":str(exc)}) from exc
 
     return app
 
