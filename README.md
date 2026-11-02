@@ -1,6 +1,6 @@
 # RXNI — Reaction Intelligence
 
-**Software release status:** `v0.1.0` is the published release. This documentation refresh targets the public `0.1.1` maintenance code at commit `5e030e388118024627f98aa4de7d58fd6ee706c8`; a `v0.1.1` Git tag and release assets were not verified as part of this documentation patch. **Scientific baseline:** Reaction Intelligence v6.7.0. RXNI supports reaction-semantic analysis, indexed structural/semantic retrieval, and exploration of recorded reaction methods. It does **not** establish experimental success, validated synthetic conditions, or explicit electron-pushing mechanisms.
+**Software release status:** `v0.1.1` is the published release. This documentation refresh targets the public `0.1.1` maintenance code at commit `5e030e388118024627f98aa4de7d58fd6ee706c8`; a `v0.1.1` Git tag and release assets were not verified as part of this documentation patch. **Scientific baseline:** Reaction Intelligence v6.7.0. RXNI supports reaction-semantic analysis, indexed structural/semantic retrieval, and exploration of recorded reaction methods. It does **not** establish experimental success, validated synthetic conditions, or explicit electron-pushing mechanisms.
 
 ## Install the software
 
