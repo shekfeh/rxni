@@ -41,6 +41,8 @@ include examples/profiles/crd25-uspto-v023a.json
 include examples/profiles/historical-v67.json
 include examples/profiles/custom-csv.json
 include examples/profiles/foundation-schema-example.json
+include examples/chemkn/cards.example.jsonl
+include examples/chemkn/method_links.example.jsonl
 include scripts/release/finalize_uspto_historical.py
 include scripts/release/prepare_zenodo_dataset.py
 include scripts/release/replay_aizynth_template_hashes.py
